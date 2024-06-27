@@ -8,6 +8,7 @@ module.exports = {
         'fc2': '#4169E1',
         'fc3': '#D2DCF8',
         'fc4': '#7B7878',
+        'fc5': '#EDEDED'
         
       },
     },
