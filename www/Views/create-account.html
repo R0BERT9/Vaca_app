@@ -1,42 +1,143 @@
-<link rel="stylesheet" href="/www/Public/css/tailstyle.css">
-
 <div class="gap-4 flex flex-col">
-
-<div class="mt-9 gap-3 flex flex-col">
-    <h2 class="text-fc2 font-bold text-3xl text-center">VacaSmart</h2>
-    <div class="w-11/12 m-auto">
-        <img class="rounded-md" src="Public/img/dieny-portinanni-gvIb47vLry0-unsplash.jpg" alt="">
-    </div>
-</div>
-
-<div class="flex justify-start ml-3">
-    <h2 class="text-fc2 font-bold text-2xl">Crear cuenta</h2>
-</div>
-
-<form class="w-3/4 m-auto flex flex-col gap-5">
-    <div class="gap-8 flex flex-col">
-        <div class="gap-1 flex flex-col">
-            <p class="text-sm font-medium">Correo Electrónico</p>
-            <input class="text-fc4 p-3 w-full bg-fc5 text-sm rounded-md outline-none" type="email" name="" id="" placeholder="Introduce tu correo electrónico">
-        </div>
-    
-        <div>
-            <p class="text-sm font-medium">Contraseña</p>
-            <input class="text-fc4 p-3 w-full bg-fc5 text-sm rounded-md outline-none" type="password" name="" id="" placeholder="Introduce tu contraseña">
-        </div>
-    </div>
-
-    <div class="flex flex-col gap-4">
-        <div class="p-3 flex rounded-md justify-center bg-fc2 ">
-            <button type="submit" class="text-fc1 text-center font-semibold">
-                Crear Cuenta
+    <div class="mt-9 gap-3 flex flex-col">
+        <div class="flex flex-col justify-center w-[90%] m-auto">
+            <button class="material-symbols-outlined left-0-0 flex items-center absolute view-back">
+                arrow_back_ios
             </button>
+            <h2 class="text-fc2 font-bold text-3xl text-center">VacaSmart</h2>
         </div>
-        <div class="flex gap-1 justify-center">
-            <p class="text-sm text-fc4 font-normal">Ya tienes una cuenta?</p>
-            <button class="text-sm text-fc2 font-medium">Inicia sesión</button>
-        </div>
+        <div class="w-11/12 m-auto">
+            <img class="rounded-md" src="Public/img/dieny-portinanni-gvIb47vLry0-unsplash.jpg" alt="">
+        </div> 
     </div>
-</form>
 
+    <div class="flex justify-start ml-3">
+        <h2 class="text-fc2 font-bold text-2xl">Crear cuenta</h2>
+    </div>
+
+    <form id="register-form" class="w-3/4 m-auto flex flex-col gap-5">
+        <div class="gap-6 flex flex-col">
+            <div class="gap-1 flex flex-col">
+                <p class="text-sm font-medium">Nombre de Usuario</p>
+                <input class="text-fc4 p-3 w-full bg-fc5 text-sm rounded-md outline-none" type="text" id="user-name" placeholder="Introduce tu correo electrónico">
+            </div>
+            
+            <div class="gap-1 flex flex-col">
+                <p class="text-sm font-medium">Correo Electrónico</p>
+                <input class="text-fc4 p-3 w-full bg-fc5 text-sm rounded-md outline-none" type="email" id="email" placeholder="Introduce tu correo electrónico">
+            </div>
+        
+            <div>
+                <p class="text-sm font-medium">Contraseña</p>
+                <input class="text-fc4 p-3 w-full bg-fc5 text-sm rounded-md outline-none" type="password" id="password" placeholder="Introduce tu contraseña">
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <div class="flex rounded-md justify-center bg-fc2 ">
+                <button type="button" id="register-button" class="p-3 w-full text-fc1 text-center font-semibold">
+                    Crear Cuenta
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="flex gap-1 justify-center">
+        <p class="text-sm text-fc4 font-normal">Ya tienes una cuenta?</p>
+        <button class="view-log-in text-sm text-fc2 font-medium">Inicia sesión</button>
+    </div>
 </div>
+
+<script>
+    document.querySelector('.view-log-in').addEventListener('click', function() {
+        loadPartialView('log-in', document.querySelector('.init'), false);
+    });
+
+    $(document).ready(function() {
+        $('#register-button').on('click', function(e) {
+            e.preventDefault();
+
+            const userName = $('#user-name').val();
+            const email = $('#email').val();
+            const password = $('#password').val();
+
+            if (!userName || !email || !password) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Por favor, completa todos los campos.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+
+                    db.collection('users').doc(user.uid).set({
+                        name: userName,
+                        email: user.email
+                    }).then(() => {
+                        Swal.fire({
+                            title: 'Éxito!',
+                            text: 'Usuario registrado exitosamente',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            localStorage.setItem('user', JSON.stringify(user));
+                            loadPartialView('home-vaca', document.querySelector('.init'), false);
+                        });
+                    }).catch((error) => {
+                        console.error("Error al añadir el documento: ", error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Hubo un error al registrar el usuario en Firestore',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    let alertMessage = errorMessage;
+
+                    switch (errorCode) {
+                        case 'auth/email-already-in-use':
+                            alertMessage = 'El correo electrónico ya está en uso.';
+                            break;
+                        case 'auth/invalid-email':
+                            alertMessage = 'El correo electrónico no es válido.';
+                            break;
+                        case 'auth/operation-not-allowed':
+                            alertMessage = 'El registro por correo electrónico y contraseña no está habilitado.';
+                            break;
+                        case 'auth/weak-password':
+                            alertMessage = 'La contraseña debe tener al menos 6 caracteres.';
+                            break;
+                        default:
+                            alertMessage = 'Hubo un error al registrar el usuario.';
+                            break;
+                    }
+
+                    Swal.fire({
+                        title: 'Error!',
+                        text: alertMessage,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        });
+
+        const user = localStorage.getItem('user');
+        if (user) {
+            loadPartialView('home-vaca', document.querySelector('.init'), false);
+        }
+    });
+
+
+    document.querySelector('.view-back').addEventListener('click',function(){
+        loadPartialView('home-app',document.querySelector('.init'), false);
+    })
+</script>

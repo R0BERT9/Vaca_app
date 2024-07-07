@@ -1,63 +1,225 @@
-
-
-<div class="flex flex-col gap-8 w-[90%] m-auto">
+<div class="flex flex-col gap-8 w-[90%] m-auto vacasmart-container">
     <div class="flex flex-col gap-5 mt-9">
         <h2 class="text-center text-fc2 font-bold text-2xl">VacaSmart</h2>
 
         <div class="relative bg-cover rounded-md bg-center text-white" style="background-image: url('Public/img/sebastien-Sy3IglrTh7M-unsplash.jpg');">
             <div class="flex flex-col items-start justify-end bottom-0 h-full p-5 pt-20">
                 <h2 class="text-2xl font-bold">Bienvenido a VacaSmart</h2>
-                <p class="">Cuida a tus vacas responsablemente e</p>
+                <p>Cuida a tus vacas responsablemente e</p>
                 <p>inteligentemente</p>
             </div>
-           
         </div>
-        
     </div>
     
-    <div class="flex flex-col gap-6">
-        <h2 class="font-bold text-lg">Administra tus vacas</h2>
-    
-        <div class="flex gap-4">
-            <div class="w-16">
-                <img class="rounded-full" src="Public/img/images.jpg" alt="">
-            </div>
-            <div class="flex flex-col justify-center">
-                <h2 class="font-bold text-[#1F1F1F]">Buddy</h2>
-                <p class="text-sm text-[#9999] font-medium">Reynosa Tamaulipas, 50kg</p>
-            </div>
-        </div>
-        
-        <div class="flex gap-4">
-            <div class="w-16">
-                <img class="rounded-full" src="Public/img/images.jpg" alt="">
-            </div>
-            <div class="flex flex-col justify-center">
-                <h2 class="font-bold text-[#1F1F1F]">Buddy</h2>
-                <p class="text-sm text-[#9999] font-medium">Reynosa Tamaulipas, 50kg</p>
-            </div>
-        </div>
-        
-        <div class="flex gap-4">
-            <div class="w-16">
-                <img class="rounded-full" src="Public/img/images.jpg" alt="">
-            </div>
-            <div class="flex flex-col justify-center">
-                <h2 class="font-bold text-[#1F1F1F]">Buddy</h2>
-                <p class="text-sm text-[#9999] font-medium">Reynosa Tamaulipas, 50kg</p>
-            </div>
-        </div>
-        
-        <div class="flex gap-4">
-            <div class="w-16">
-                <img class="rounded-full" src="Public/img/images.jpg" alt="">
-            </div>
-            <div class="flex flex-col justify-center">
-                <h2 class="font-bold text-[#1F1F1F]">Buddy</h2>
-                <p class="text-sm text-[#9999] font-medium">Reynosa Tamaulipas, 50kg</p>
-            </div>
-        </div>
-        
+    <div class="flex flex-col gap-4 mb-24 cow-container">
+        <!-- Productos serán inyectados aquí -->
+    </div>
+</div>
+
+<div class="w-[90%] m-auto mt-9 gap-8 flex flex-col hidden detail-view mb-24">
+    <div class="flex flex-col justify-center">
+        <button class="material-symbols-outlined left-0-0 flex items-center absolute view-back">
+            arrow_back_ios
+        </button>
+        <h2 class="text-center text-fc2 font-bold text-2xl">Detalles de la vaca</h2>
     </div>
 
+    <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-5">
+            <div class="flex justify-center h-52">
+                <img id="detail-image" class="w-full object-cover rounded-sm" src="" alt="">
+            </div>
+
+            <div class="gap-2 flex flex-col">
+                <h2 id="detail-name" class="font-bold text-lg"></h2>
+                <p id="detail-description" class="text-sm"></p>
+            </div>
+        </div>
+        
+        <div class="flex gap-2 items-center">
+            <div class="p-2 bg-fc3 items-center flex rounded-md">
+                <span class="material-symbols-outlined text-fc2">
+                    location_on
+                </span>
+            </div>
+            <div>
+                <p>Ubicación</p>
+                <p id="detail-location" class="text-sm text-fc4"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+        <h2 class="font-bold text-lg">Estado de salud</h2>
+        <div class="flex flex-col gap-4">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined p-2 bg-fc3 items-center flex rounded-md text-fc2">
+                    weight
+                </span>
+                <div>
+                    <p>Peso</p>
+                    <p id="detail-weight" class="text-sm text-fc4"></p> 
+                </div>
+            </div>
+            <div class="flex gap-2 items-center">
+                <span class="material-symbols-outlined p-2 bg-fc3 items-center flex rounded-md text-fc2">
+                    thumbs_up_down
+                </span>
+                <div>
+                    <p>Capacidad reproductiva</p>
+                    <p id="detail-reproductive-capacity" class="text-sm text-fc4"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="font-bold text-lg">Cámara en vivo</h2>
+
+        <div class="bg-fc5 p-2 rounded-md flex flex-col gap-4">
+            <div class="flex w-full items-center">
+                <span class="material-symbols-outlined w-[10%] text-fc2">
+                    videocam
+                </span>  
+                <p class="w-[60%]">Cámara 1</p>
+                <button class="w-[30%] p-1 bg-fc3 rounded-md">Ver</button>
+            </div>
+
+            <div class="flex w-full items-center">
+                <span class="material-symbols-outlined w-[10%] text-fc2">
+                    videocam
+                </span>  
+                <p class="w-[60%]">Cámara 2</p>
+                <button class="w-[30%] p-1 bg-fc3 rounded-md">Ver</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    async function getCityAndState(latitude, longitude) {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`);
+        const data = await response.json();
+        if (data && data.address) {
+            const city = data.address.city || data.address.town || data.address.village || 'Ciudad desconocida';
+            const state = data.address.state || 'Estado desconocido';
+            return `${city}, ${state}`;
+        } else {
+            return 'Ubicación desconocida';
+        }
+    }
+
+    async function fetchCows() {
+        const userId = firebase.auth().currentUser.uid;
+        const cowsRef = firebase.firestore().collection('users').doc(userId).collection('cows');
+
+        // Ordena por la fecha de creación en orden descendente y limita a 5 documentos
+        const snapshot = await cowsRef.orderBy('createdAt', 'desc').limit(5).get();
+        const cows = [];
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            cows.push({
+                id: doc.id,
+                name: data.name,
+                description: data.description,
+                location: data.location,
+                weight: data.weight,
+                reproductive_capacity: data.reproductive_capacity,
+                image_url: data.image_url
+            });
+        });
+
+        return cows;
+    }
+
+    async function renderCows() {
+        const cows = await fetchCows();
+        const cowContainer = document.querySelector('.cow-container');
+        cowContainer.innerHTML = '';
+
+        for (const cow of cows) {
+            const location = await getCityAndState(cow.location.latitude, cow.location.longitude);
+            const cowElement = document.createElement('div');
+            cowElement.classList.add('flex', 'gap-4', 'bg-[#E6ECFF]', 'p-2', 'rounded-md', 'w-full', 'cursor-pointer', 'cow-card');
+            cowElement.setAttribute('data-id', cow.id);
+            cowElement.innerHTML = `
+                <div class="w-fit">
+                    <img class="rounded-full w-16 h-16 object-cover" src="${cow.image_url}" alt="${cow.name}">
+                </div>
+                <div class="flex flex-col justify-center w-[50%]">
+                    <h2 class="font-bold text-[#1F1F1F]">${cow.name}</h2>
+                    <p class="text-sm text-fc2 font-medium">${location}</p>
+                </div>
+                <button class="material-symbols-outlined w-[25%] delete-cow" data-id="${cow.id}">
+                    close
+                </button>
+            `;
+            cowContainer.appendChild(cowElement);
+        }
+
+        document.querySelectorAll('.cow-card').forEach(card => {
+            card.addEventListener('click', async function() {
+                const cowId = this.getAttribute('data-id');
+                const cow = (await fetchCows()).find(cow => cow.id === cowId);
+                if (cow) {
+                    document.querySelector('#detail-image').src = cow.image_url;
+                    document.querySelector('#detail-name').textContent = cow.name;
+                    document.querySelector('#detail-description').textContent = cow.description;
+                    const location = await getCityAndState(cow.location.latitude, cow.location.longitude);
+                    document.querySelector('#detail-location').textContent = location;
+                    document.querySelector('#detail-weight').textContent = cow.weight + 'kg';
+                    document.querySelector('#detail-reproductive-capacity').textContent = cow.reproductive_capacity || 'No disponible';
+                    
+                    document.querySelector('.vacasmart-container').classList.add('hidden');
+                    document.querySelector('.detail-view').classList.remove('hidden');
+                    hideNavBar();
+                }
+            });
+        });
+
+        document.querySelectorAll('.delete-cow').forEach(button => {
+            button.addEventListener('click', async function(event) {
+                event.stopPropagation();
+                const cowId = this.getAttribute('data-id');
+                const result = await Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "¡No podrás revertir esto!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, eliminarla!',
+                    cancelButtonText: 'Cancelar'
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        const userId = firebase.auth().currentUser.uid;
+                        await firebase.firestore().collection('users').doc(userId).collection('cows').doc(cowId).delete();
+                        Swal.fire(
+                            'Eliminada!',
+                            'La vaca ha sido eliminada.',
+                            'success'
+                        );
+                        renderCows();
+                    } catch (error) {
+                        Swal.fire(
+                            'Error!',
+                            'Hubo un problema al eliminar la vaca.',
+                            'error'
+                        );
+                    }
+                }
+            });
+        });
+
+        document.querySelector('.view-back').addEventListener('click', function() {
+            document.querySelector('.vacasmart-container').classList.remove('hidden');
+            document.querySelector('.detail-view').classList.add('hidden');
+            showNavBar();
+        });
+    }
+
+    renderCows();
+</script>

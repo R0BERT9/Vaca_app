@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="/www/Public/css/tailstyle.css">
+    
+<div id="navBar" class="nav-bar bg-white flex justify-around bottom-0 right-0 fixed w-full py-2 border-t-[1px] border-[#999999]">
+
+<button class="flex flex-col items-center view-home">
+    <span class="material-symbols-outlined text-fc2 text-3xl">
+        home
+    </span>
+    <span class="text-fc2 text-sm">Inicio</span>  
+</button>
+
+<button class="flex flex-col items-center view-products justify-center">
+    <img src="Public/img/cow-solid.svg" alt="">
+    <span class="text-fc2 text-sm">Vacas</span>
+</button>
+
+<button class="flex flex-col items-center view-profile">
+    <span class="material-symbols-outlined text-fc2 text-3xl">
+        person
+    </span>    
+    <span class="text-fc2 text-sm">Perfil</span>
+</button>
+
+
+
+<script>  /* partial view para la funcionalidad de botones!!! */ 
+    document.querySelector('.view-home').addEventListener('click',function(){
+    loadPartialView('home-vaca',document.querySelector('.init'), false);
+    })
+    
+    document.querySelector('.view-products').addEventListener('click',function(){
+    loadPartialView('ganado',document.querySelector('.init'), false);
+    })
+
+    document.querySelector('.view-profile').addEventListener('click',function(){
+    loadPartialView('profile',document.querySelector('.init'), false);
+    })
+
+    
+</script>
