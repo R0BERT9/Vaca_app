@@ -79,7 +79,6 @@
     $(document).ready(function() {
     const user = firebase.auth().currentUser;
 
-    // Function to handle loading user data
     function loadUserData() {
         if (user) {
             const userId = user.uid;
@@ -102,10 +101,8 @@
         }
     }
 
-    // Initial data load
     loadUserData();
 
-    // Manejo de logout
     $('#logout-button').on('click', function() {
         Swal.fire({
             title: '¿Estás seguro?',
@@ -119,7 +116,6 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 firebase.auth().signOut().then(() => {
-                    // El usuario ha cerrado sesión
                     localStorage.removeItem('user');
                     loadPartialView('home-app', document.querySelector('.init'), false);
                 }).catch((error) => {
@@ -129,7 +125,6 @@
         });
     });
 
-    // Manejo del formulario de edición de perfil
     $('#profile-form').on('submit', function(e) {
         e.preventDefault();
 
@@ -147,22 +142,17 @@
             return;
         }
 
-        // Set the flag to true to prevent view changes
         isUpdatingProfile = true;
 
-        // Reautenticar al usuario
         const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
 
         user.reauthenticateWithCredential(credential).then(() => {
-            // Actualizar el nombre en Firestore
             const userRef = firebase.firestore().collection('users').doc(user.uid);
             userRef.update({
                 name: newName
             }).then(() => {
-                // Actualizar la contraseña si se proporciona
                 if (newPassword) {
                     user.updatePassword(newPassword).then(() => {
-                        // Actualizar el nombre en la interfaz de usuario
                         $('#user-name-display').text(newName);
                         $('#user-name').val(newName);
 
@@ -182,7 +172,6 @@
                         });
                     });
                 } else {
-                    // Solo actualizar el nombre sin cambiar la contraseña
                     $('#user-name-display').text(newName);
                     $('#user-name').val(newName);
 
@@ -194,7 +183,6 @@
                     });
                 }
 
-                // Reset the flag after update
                 isUpdatingProfile = false;
             }).catch((error) => {
                 console.log('Error updating Firestore:', error);
@@ -205,7 +193,6 @@
                     confirmButtonText: 'OK'
                 });
 
-                // Reset the flag if error occurs
                 isUpdatingProfile = false;
             });
         }).catch((error) => {
@@ -217,12 +204,10 @@
                 confirmButtonText: 'OK'
             });
 
-            // Reset the flag if error occurs
             isUpdatingProfile = false;
         });
     });
 
-    // Mostrar y ocultar nav-bar
     $('input').on('focus', function() {
         hideNavBar();
     });

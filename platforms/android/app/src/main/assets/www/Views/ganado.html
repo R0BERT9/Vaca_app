@@ -93,77 +93,95 @@
     </div>
 </div>
 
+
+
+
 <script>
-    async function getCityAndState(latitude, longitude) {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`);
-        const data = await response.json();
-        if (data && data.address) {
-            const city = data.address.city || data.address.town || data.address.village || 'Ciudad desconocida';
-            const state = data.address.state || 'Estado desconocido';
-            return `${city}, ${state}`;
-        } else {
-            return 'Ubicación desconocida';
-        }
+
+async function getCityAndState(latitude, longitude) {
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+    if (!response.ok) {
+        throw new Error('Error fetching location data');
     }
+    const data = await response.json();
+    return `${data.address.city || ''}, ${data.address.state || ''}`;
+}
 
-    async function fetchCows() {
-        const userId = firebase.auth().currentUser.uid;
-        const cowsRef = firebase.firestore().collection('users').doc(userId).collection('cows');
-        const snapshot = await cowsRef.get();
-        const cows = [];
 
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            cows.push({
-                id: doc.id,
-                name: data.name,
-                description: data.description,
-                location: data.location,
-                weight: data.weight,
-                reproductive_capacity: data.reproductive_capacity,
-                image_url: data.image_url
+async function renderCows() {
+    const user = firebase.auth().currentUser;
+
+    if (user) {
+        const cowsContainer = document.querySelector('.cow-container');
+        const cowsRef = firebase.firestore().collection('users').doc(user.uid).collection('cows');
+
+        // Real-time listener
+        const unsubscribe = cowsRef.onSnapshot(async (snapshot) => {
+            cowsContainer.innerHTML = ""; 
+
+            const cowCardsPromises = snapshot.docs.map(async (doc) => {
+                const data = doc.data();
+                const cowId = doc.id;
+                const cowName = data.name;
+                const cowImage = data.image_url;
+                const cowWeight = data.weight;
+                const cowReproductiveCapacity = data.reproductive_capacity;
+
+                const cowCard = document.createElement('div');
+                cowCard.classList.add('flex', 'gap-4', 'bg-[#F9FAFB]', 'p-4', 'rounded-md', 'w-full');
+                cowCard.setAttribute('data-cow-id', cowId);
+                cowCard.innerHTML = `
+                    <div class="w-28 h-28 flex items-center justify-center overflow-hidden rounded-md">
+                        <img class="object-cover" src="${cowImage}" alt="${cowName}">
+                    </div>
+                    <div class="flex gap-3 w-full">
+                        <div class="flex-col flex justify-center gap-3 w-[75%]">
+                            <div>
+                                <h2 class="font-bold">${cowName}</h2>
+                                <p class="text-sm text-[#999999]">Capacidad Reproductiva: <span class="text-sm font-semibold text-black">${cowReproductiveCapacity}</span> </p>
+                                <p class="text-sm text-[#999999]">Peso: <span class="text-sm font-semibold text-black">${cowWeight}</span></p>
+                            </div>
+                            <div>
+                                <button class="py-2 px-5 bg-fc2 rounded-md text-sm text-fc1 details-cow" data-id="${cowId}">Detalles</button>
+                            </div>
+                        </div>
+                        <button class="material-symbols-outlined w-[25%] delete-cow" data-id="${cowId}">
+                            close
+                        </button>
+                    </div>
+                `;
+
+                return cowCard;
             });
+
+            const cowCards = await Promise.all(cowCardsPromises);
+
+            cowCards.forEach(cowCard => cowsContainer.appendChild(cowCard));
+
+            setupEventListeners();
         });
 
-        return cows;
+        document.addEventListener("visibilitychange", function () {
+            if (document.visibilityState === 'hidden') {
+                unsubscribe(); 
+            }
+        });
+    } else {
+        console.log('No user is signed in');
     }
+}
 
-    async function renderCows() {
-        const cows = await fetchCows();
-        const cowContainer = document.querySelector('.cow-container');
-        cowContainer.innerHTML = '';
+function setupEventListeners() {
+    const vacasmartContainer = document.querySelector('.vacasmart-container');
+    const detailView = document.querySelector('.detail-view');
 
-        for (const cow of cows) {
-            const location = await getCityAndState(cow.location.latitude, cow.location.longitude);
-            const cowElement = document.createElement('div');
-            cowElement.classList.add('flex', 'gap-4', 'bg-[#F9FAFB]', 'p-4', 'rounded-md', 'w-full');
-            cowElement.innerHTML = `
-                <div class="w-28 h-28 flex items-center justify-center overflow-hidden rounded-md">
-                    <img class="object-cover" src="${cow.image_url}" alt="${cow.name}">
-                </div>
-                <div class="flex gap-3 w-full">
-                    <div class="flex-col flex justify-center gap-3 w-[75%]">
-                        <div>
-                            <h2 class="font-bold">${cow.name}</h2>
-                            <p class="text-sm text-[#999999]">${location}</p>
-                        </div>
-                        <div>
-                            <button class="py-2 px-5 bg-fc2 rounded-md text-sm text-fc1 details-cow" data-id="${cow.id}">Detalles</button>
-                        </div>
-                    </div>
-                    <button class="material-symbols-outlined w-[25%] delete-cow" data-id="${cow.id}">
-                        close
-                    </button>
-                </div>
-            `;
-            cowContainer.appendChild(cowElement);
-        }
+    document.querySelectorAll('.details-cow').forEach(button => {
+        button.addEventListener('click', async function() {
+            const cowId = this.getAttribute('data-id');
+            try {
+                const cowDoc = await firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('cows').doc(cowId).get();
+                const cow = cowDoc.data();
 
-        document.querySelectorAll('.details-cow').forEach(button => {
-            button.addEventListener('click', async function() {
-                const cowId = this.getAttribute('data-id');
-                const cows = await fetchCows();
-                const cow = cows.find(cow => cow.id === cowId);
                 if (cow) {
                     document.querySelector('#detail-image').src = cow.image_url;
                     document.querySelector('#detail-name').textContent = cow.name;
@@ -173,9 +191,6 @@
                     document.querySelector('#detail-weight').textContent = cow.weight + 'kg';
                     document.querySelector('#detail-reproductive-capacity').textContent = cow.reproductive_capacity || 'No disponible';
                     
-                    const vacasmartContainer = document.querySelector('.vacasmart-container');
-                    const detailView = document.querySelector('.detail-view');
-                    
                     if (vacasmartContainer && detailView) {
                         vacasmartContainer.classList.add('hidden');
                         detailView.classList.remove('hidden');
@@ -184,61 +199,65 @@
                         console.error('No se encontraron los elementos de la vista');
                     }
                 }
-            });
+            } catch (error) {
+                console.error('Error al cargar los detalles de la vaca:', error);
+            }
         });
+    });
 
-        document.querySelectorAll('.delete-cow').forEach(button => {
-            button.addEventListener('click', async function() {
-                const cowId = this.getAttribute('data-id');
-                const result = await Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "¡No podrás revertir esto!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Sí, eliminarla!',
-                    cancelButtonText: 'Cancelar'
-                });
+    document.querySelectorAll('.delete-cow').forEach(button => {
+        button.addEventListener('click', async function(event) {
+            event.stopPropagation(); // Prevent click from propagating to parent elements
+            const cowId = this.getAttribute('data-id');
+            const result = await Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminarla!',
+                cancelButtonText: 'Cancelar'
+            });
 
-                if (result.isConfirmed) {
-                    try {
-                        const userId = firebase.auth().currentUser.uid;
-                        await firebase.firestore().collection('users').doc(userId).collection('cows').doc(cowId).delete();
-                        Swal.fire(
-                            'Eliminada!',
-                            'La vaca ha sido eliminada.',
-                            'success'
-                        );
-                        renderCows();
-                    } catch (error) {
-                        Swal.fire(
-                            'Error!',
-                            'Hubo un problema al eliminar la vaca.',
-                            'error'
-                        );
-                    }
+            if (result.isConfirmed) {
+                try {
+                    const userId = firebase.auth().currentUser.uid;
+                    await firebase.firestore().collection('users').doc(userId).collection('cows').doc(cowId).delete();
+                    Swal.fire(
+                        'Eliminada!',
+                        'La vaca ha sido eliminada.',
+                        'success'
+                    );
+                } catch (error) {
+                    Swal.fire(
+                        'Error!',
+                        'Hubo un problema al eliminar la vaca.',
+                        'error'
+                    );
                 }
-            });
+            }
         });
+    });
+}
+
+document.querySelector('.add-vaca').addEventListener('click', function() {
+    loadPartialView('add-vaca', document.querySelector('.init'), false);
+});
+
+document.querySelector('.view-back').addEventListener('click', function() {
+    const vacasmartContainer = document.querySelector('.vacasmart-container');
+    const detailView = document.querySelector('.detail-view');
+
+    if (vacasmartContainer && detailView) {
+        vacasmartContainer.classList.remove('hidden');
+        detailView.classList.add('hidden');
+        showNavBar();
+    } else {
+        console.error('No se encontraron los elementos de la vista');
     }
+});
 
-    document.querySelector('.add-vaca').addEventListener('click', function() {
-        loadPartialView('add-vaca', document.querySelector('.init'), false);
-    });
-
-    document.querySelector('.view-back').addEventListener('click', function() {
-        const vacasmartContainer = document.querySelector('.vacasmart-container');
-        const detailView = document.querySelector('.detail-view');
-
-        if (vacasmartContainer && detailView) {
-            vacasmartContainer.classList.remove('hidden');
-            detailView.classList.add('hidden');
-            showNavBar();
-        } else {
-            console.error('No se encontraron los elementos de la vista');
-        }
-    });
-
-    renderCows();
+// Initialize rendering
+renderCows();
 </script>

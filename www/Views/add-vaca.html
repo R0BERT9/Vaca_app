@@ -129,7 +129,7 @@
                 weight: parseFloat(cowWeight),
                 reproductive_capacity: reproductiveCapacity,
                 image_url: downloadURL,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp() // Añadir la fecha y hora actuales
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
         }).then(() => {
             Swal.fire({

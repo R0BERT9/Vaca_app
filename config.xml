@@ -3,9 +3,11 @@
     <name>VacaApp</name>
     <description>App para vacas</description>
     <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
-        Apache Cordova Team
+        Roberto Pérez
     </author>
     <content src="index.html" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
+    <icon src="www/Public/img/images.jpg" platform="android" width="57" height="57" density="mdpi" />
+
 </widget>

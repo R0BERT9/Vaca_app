@@ -74,9 +74,7 @@
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then(() => {
-                        // Guardar sesión en localStorage
                         localStorage.setItem('user', JSON.stringify(userCredential.user));
-                        // Redirigir a home-inventory
                         loadPartialView('home-vaca', document.querySelector('.init'), false);
                     });
                 })
@@ -109,7 +107,6 @@
                 });
         });
 
-        // Verificar si hay una sesión activa
         const user = localStorage.getItem('user');
         if (user) {
             loadPartialView('home-vaca', document.querySelector('.init'), false);
